@@ -5,6 +5,10 @@ import 'article_item.dart';
 
 
 class ArticlesList extends StatelessWidget {
+  /*
+  String sourceId;
+  ArticlesList({required this.sourceId});
+  */
 
   @override
   Widget build(BuildContext context) {
