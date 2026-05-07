@@ -7,5 +7,5 @@ class AppConstants {
     "Al Jazeera"
   ];
 
-  static const String apiKey = "d3e16e322c2e4c00b4b4f4967c290a7f";
+  static const String apiKey = "54d426478e20432b8b20b8b9caf6f3bc";
 }
