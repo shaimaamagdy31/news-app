@@ -2,11 +2,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:news_application/model/articles_response/article.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../../core/resources/colors_manager.dart';
 
 class ArticleItem extends StatelessWidget {
-  const ArticleItem({super.key});
+  final Article article;
+   ArticleItem({required this.article});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class ArticleItem extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadiusGeometry.circular(8.r),
              child: CachedNetworkImage(
-               imageUrl: "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
+               imageUrl: article.urlToImage??"",
                height: 220.h,
                fit: BoxFit.cover,
                placeholder: (context, url) => Center(child: CircularProgressIndicator(),),
@@ -30,7 +32,7 @@ class ArticleItem extends StatelessWidget {
              ),
           ),
           Text(
-            "40-year-old man falls 200 feet to his death while canyoneering at national park",
+            article.title??"",
             style: Theme.of(
               context,
             ).textTheme.headlineMedium?.copyWith(fontSize: 16.sp),
@@ -39,12 +41,12 @@ class ArticleItem extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  "By : Jon Haworth",
+                  "By : ${article.author??""}",
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
               Text(
-                "15 minutes ago",
+                timeago.format(DateTime.parse(article.publishedAt??"")),
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ],

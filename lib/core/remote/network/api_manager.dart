@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:news_application/model/sourses_response/sources_response.dart';
+import '../../../model/articles_response/articles_response.dart';
 import '../../resources/app_constants.dart';
 
 class ApiManager {
@@ -20,6 +21,18 @@ class ApiManager {
     return sourcesResponse;
 
   }
+
+  static Future<ArticlesResponse> getArticles(String sourceId)async{
+    //?sources=bbc-sport
+    var response = await dio.get("/v2/everything",queryParameters: {
+      "apiKey":AppConstants.apiKey,
+      "sources":sourceId
+    });
+    ArticlesResponse articlesResponse = ArticlesResponse.fromJson(response.data);
+    return articlesResponse;
+  }
+
+
 
 
 }

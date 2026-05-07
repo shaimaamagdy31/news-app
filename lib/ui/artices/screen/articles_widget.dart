@@ -62,7 +62,7 @@ class _ArticlesWidgetState extends State<ArticlesWidget> {
                       tabs: sourcesList.map((source)=>Tab(
                         text:source.name ,
                       )).toList()),
-                  Expanded(child: TabBarView(children: sourcesList.map((source) => ArticlesList(),).toList()))
+                  Expanded(child: TabBarView(children: sourcesList.map((source) => ArticlesList(source: source,),).toList()))
                 ],
               ),
             ),
