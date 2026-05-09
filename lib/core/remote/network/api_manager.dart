@@ -11,7 +11,7 @@ class ApiManager {
   );
 
 
-  static Future<SourcesResponse> getsSources(String selectedCategory) async {
+  static Future<SourcesResponse> getSources(String selectedCategory) async {
     var response = await dio.get("/v2/top-headlines/sources",queryParameters: {
       "apiKey":AppConstants.apiKey,
       "category":selectedCategory
