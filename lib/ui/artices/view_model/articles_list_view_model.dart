@@ -1,35 +1,39 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_application/model/articles_response/article.dart';
-
 import '../../../core/remote/network/api_manager.dart';
-class ArticlesListViewModel extends ChangeNotifier {
-  List<Article>? articles;
-  String? errorMessage;
-  bool isLoading = false;
+
+
+class ArticlesListViewModel extends Cubit<ArticlesListStates>{
+  ArticlesListViewModel():super(ArticlesListLoadingState());
+
   getArticles(String sourceId)async{
-
     try{
-      articles = null;
-      errorMessage = null;
-      isLoading = true;
-      notifyListeners();
-      var response = await ApiManager.getArticles(sourceId);
-      isLoading = false;
-      if(response.status!="error"){
-        // success logic data
-        articles = response.articles;
+      // loading
+      emit(ArticlesListLoadingState());
+      var result = await ApiManager.getArticles(sourceId);
+      if(result.status!="error"){
+        // success
+        emit(ArticlesListSuccessState(result.articles??[]));
       }else{
-        // server error
-        errorMessage = response.message;
+        // error
+        emit(ArticlesListErrorState(result.message!));
       }
-      notifyListeners();
     }catch(e){
-      isLoading = false;
-      errorMessage = "No Internet Connection";
-      notifyListeners();
+      // error
+      emit(ArticlesListErrorState(e.toString()));
     }
-
-
-
   }
+
+}
+
+sealed class ArticlesListStates{}
+
+class ArticlesListLoadingState extends ArticlesListStates{}
+class ArticlesListErrorState extends ArticlesListStates{
+  String errorMessage;
+  ArticlesListErrorState(this.errorMessage);
+}
+class ArticlesListSuccessState extends ArticlesListStates{
+  List<Article> articles;
+  ArticlesListSuccessState(this.articles);
 }

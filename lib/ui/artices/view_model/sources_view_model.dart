@@ -1,33 +1,37 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/remote/network/api_manager.dart';
 import '../../../model/sourses_response/sources.dart';
 
-class SourcesViewModel extends ChangeNotifier{
-  List<Source>? sources;
-  String? errorMessage;
-  bool isLoading = false;
+class SourcesViewModel extends Cubit<SourcesState>{
+  SourcesViewModel():super(SourcesLoadingState());
+
   getSources(String selectedCategory)async{
     try{
-      sources = null;
-      errorMessage = null;
-      isLoading = true;
-      notifyListeners();
-      var response = await ApiManager.getSources(selectedCategory);
-      isLoading = false;
-      if(response.status!="error"){
-        // success logic data
-        sources = response.sources;
+      // loading
+      emit(SourcesLoadingState());
+      var result = await ApiManager.getSources(selectedCategory);
+      if(result.status!="error"){
+        // success
+        emit(SourcesSuccessState(result.sources??[]));
       }else{
-        // server error
-        errorMessage = response.message;
+        // error
+        emit((SourcesErrorState(result.message!)));
       }
-      notifyListeners();
     }catch(e){
-      isLoading = false;
-      errorMessage = "No Internet Connection";
-      notifyListeners();
+      // exception error
+      emit(SourcesErrorState(e.toString()));
     }
-
   }
+}
 
+sealed class SourcesState{}
+
+class SourcesLoadingState extends SourcesState{}
+class SourcesErrorState extends SourcesState{
+  String errorMessage;
+  SourcesErrorState(this.errorMessage);
+}
+class SourcesSuccessState extends SourcesState{
+  List<Source> sources;
+  SourcesSuccessState(this.sources);
 }

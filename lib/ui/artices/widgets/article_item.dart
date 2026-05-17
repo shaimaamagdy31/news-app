@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_application/model/articles_response/article.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../../core/resources/colors_manager.dart';
+import 'bottom_sheet_widget.dart';
 
 class ArticleItem extends StatelessWidget {
   final Article article;
@@ -12,47 +13,61 @@ class ArticleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: REdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: ColorsManager.lightPrimaryColor),
-      ),
-      child: Column(
-        spacing: 10.h,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadiusGeometry.circular(8.r),
-             child: CachedNetworkImage(
-               imageUrl: article.urlToImage??"",
-               height: 220.h,
-               fit: BoxFit.cover,
-               placeholder: (context, url) => Center(child: CircularProgressIndicator(),),
-               errorWidget: (context, url, error) => Center(child: Icon(Icons.error,size: 40.sp,),),
-             ),
-          ),
-          Text(
-            article.title??"",
-            style: Theme.of(
-              context,
-            ).textTheme.headlineMedium?.copyWith(fontSize: 16.sp),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "By : ${article.author??""}",
+    return InkWell(
+      onTap: (){
+        openBottomSheet(context,article);
+      },
+      child: Container(
+        padding: REdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: ColorsManager.lightPrimaryColor),
+        ),
+        child: Column(
+          spacing: 10.h,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadiusGeometry.circular(8.r),
+               child: CachedNetworkImage(
+                 imageUrl: article.urlToImage??"",
+                 height: 220.h,
+                 fit: BoxFit.cover,
+                 placeholder: (context, url) => Center(child: CircularProgressIndicator(),),
+                 errorWidget: (context, url, error) => Center(child: Icon(Icons.error,size: 40.sp,),),
+               ),
+            ),
+            Text(
+              article.title??"",
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(fontSize: 16.sp),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "By : ${article.author??""}",
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+                Text(
+                  timeago.format(DateTime.parse(article.publishedAt??"")),
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-              ),
-              Text(
-                timeago.format(DateTime.parse(article.publishedAt??"")),
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
+  }
+  openBottomSheet(BuildContext context,Article article){
+    return showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (context){
+          return Center(child: BottomSheetWidget(article: article,));
+        });
+
   }
 }
